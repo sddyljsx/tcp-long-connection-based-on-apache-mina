@@ -1,7 +1,9 @@
 # TCP-long-connection-based-on-Apache-mina
 **基于Apache mina 的tcp长连接实现,可用于android客户端推送。**
 
-项目将Apache的mina项目移植到了android平台。
+项目将Apache的mina项目移植到了android平台。实现长连接的主要思想是使用了mina的KeepAliveFilter过滤器。
+    acceptor.getFilterChain().addLast("keeplive", new KeepAliveFilter(new ServerKeepAliveMessageFactoryImp(), IdleStatus.READER_IDLE, KeepAliveRequestTimeoutHandler.CLOSE,10, 5));
+
 
 Android客户端：
 
@@ -40,3 +42,17 @@ Android客户端：
      */
     public static final String PONG_MESSAGE="pong";
 程序启动后，PushService启动，并开始与服务器连接。
+
+**服务器端核心代码：**
+
+![](https://github.com/sddyljsx/Android-tcp-long-connection-based-on-Apache-mina/blob/master/003.png?raw=true)
+
+服务器与客户端的ping与pong信息要保持一致。服务器启动LongTcpServer即可。
+
+在服务器可以看到日志信息：
+
+![](https://github.com/sddyljsx/Android-tcp-long-connection-based-on-Apache-mina/blob/master/001.png?raw=true)
+
+可以看到，成功建立了链接，并且每隔10秒都会受到ping信息，并发送pong信息应答。
+
+
