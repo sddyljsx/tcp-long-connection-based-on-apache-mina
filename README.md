@@ -5,7 +5,7 @@
 
 Android客户端：
 
-核心代码如下图所示，规定了长连接ping与pong信息的规则。
+核心代码如下图所示，规定了长连接ping与pong信息的规则，以及网络参数配置信息。
 
 ![](https://github.com/sddyljsx/Android-tcp-long-connection-based-on-Apache-mina/blob/master/002.png?raw=true)
 
@@ -39,3 +39,4 @@ Android客户端：
      * 心跳包 pong message
      */
     public static final String PONG_MESSAGE="pong";
+程序启动后，PushService启动，并开始与服务器连接。
