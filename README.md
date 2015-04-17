@@ -2,6 +2,7 @@
 **基于Apache mina 的tcp长连接实现,可用于android客户端推送。**
 
 项目将Apache的mina项目移植到了android平台。实现长连接的主要思想是使用了mina的KeepAliveFilter过滤器。
+
     acceptor.getFilterChain().addLast("keeplive", new KeepAliveFilter(new ServerKeepAliveMessageFactoryImp(), IdleStatus.READER_IDLE, KeepAliveRequestTimeoutHandler.CLOSE,10, 5));
 
 
