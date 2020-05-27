@@ -1,5 +1,25 @@
 //rootProject.name = 'tcp-long-connection-based-on-apache-mina'
 include ':android-client'
-include ':server'
-include ':client'
 include ':common'
+include ':SumUpCommon'
+
+include ':client'
+include ':NetCatClient'
+include ':SumUpClient'
+include ':TCPClient'
+include ':UDPClient'
+
+include ':server'
+include ':TimeServer'
+include ':Proxyserver'
+include ':EchoServer'
+include ':HaikuValidationServer'
+include ':ReverserServer'
+include ':SumUpServer'
+include ':TCPServer'
+include ':UDPServer'
+
+include ':TennisBall'
+
+include ':MemoryMonitor'
+include ':MemMonClient'
