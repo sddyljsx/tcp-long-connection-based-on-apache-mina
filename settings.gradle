@@ -2,3 +2,4 @@
 include ':android-client'
 include ':server'
 include ':client'
+include ':common'
