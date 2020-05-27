@@ -1,3 +1,4 @@
 //rootProject.name = 'tcp-long-connection-based-on-apache-mina'
 include ':android-client'
 include ':server'
+include ':client'

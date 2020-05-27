@@ -16,7 +16,7 @@ jar {
     //Ref : https://stackoverflow.com/questions/21721119/creating-runnable-jar-with-gradle
     //Ref : https://mkyong.com/gradle/gradle-create-a-jar-file-with-dependencies/
     manifest {
-        attributes 'Main-Class': 'org.apache.mina.test.LongTcpServer', 'Implementation-Title': 'TCP Long Connection Example-Server',
+        attributes 'Main-Class': 'org.apache.mina.test.LongTcpClient', 'Implementation-Title': 'TCP Long Connection Example Client',
                 'Implementation-Version': version
     }
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
@@ -55,9 +55,9 @@ task fatJar(type: Jar) {
     baseName = 'TCP_Long_Connection'
     version =  '0.0.1'
     manifest {
-        attributes 'Implementation-Title': 'TCP Long Connection Example-Server',
+        attributes 'Implementation-Title': 'TCP Long Connection Example Client',
                 'Implementation-Version': version,
-                'Main-Class': 'org.apache.mina.test.LongTcpServer'
+                'Main-Class': 'org.apache.mina.test.LongTcpClient'
     }
 
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
