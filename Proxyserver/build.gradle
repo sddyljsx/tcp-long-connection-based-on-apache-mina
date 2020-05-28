@@ -1,0 +1,73 @@
+// Ref : https://gist.github.com/rponte/d660919434d094bbd35a1aabf7ef1bf0
+//apply plugin: 'application'
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+gradle.projectsEvaluated {
+    tasks.withType(JavaCompile) {
+        options.compilerArgs << "-Xbootclasspath/a:" + System.properties.get("java.home") + "/lib/rt.jar"
+    }
+}
+
+// tag::jar[]
+jar {
+    baseName = 'ProxyServer'
+    version =  '0.0.1'
+    //Ref : https://stackoverflow.com/questions/21721119/creating-runnable-jar-with-gradle
+    //Ref : https://mkyong.com/gradle/gradle-create-a-jar-file-with-dependencies/
+    manifest {
+        attributes 'Main-Class': 'org.apache.mina.example.proxy.Main', 'Implementation-Title': 'ProxyServer',
+                'Implementation-Version': version
+    }
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main/java'
+        }
+    }
+}
+
+sourceCompatibility = "1.8"
+targetCompatibility = "1.8"
+
+configurations.all {
+    resolutionStrategy.force 'com.google.code.findbugs:jsr305:3.0.2'
+    resolutionStrategy {
+        failOnVersionConflict()
+        preferProjectModules()
+    }
+}
+
+dependencies {
+    testImplementation 'junit:junit:4.12'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.7'
+    implementation group: 'log4j', name: 'log4j', version: '1.2.17'
+    implementation group: 'org.slf4j', name: 'slf4j-jdk14', version: '1.7.7'
+//    implementation  group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.7'
+    implementation project(path: ':common')
+}
+
+//create a single Jar with all dependencies
+task fatJar(type: Jar) {
+    baseName = 'ProxyServer'
+    version =  '0.0.1'
+    manifest {
+        attributes 'Implementation-Title': 'ProxyServer',
+                'Implementation-Version': version,
+                'Main-Class': 'org.apache.mina.example.proxy.Main'
+    }
+
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+
+//apply from: 'install.gradle'
+//apply from: 'bintray.gradle'
