@@ -23,7 +23,7 @@ import neal.minapush.util.NetworkUtil;
  */
 public class PushManager {
 
-    private static PushManager pushManager;
+    private static PushManager sManager;
 
     private NioSocketConnector connector;
 
@@ -31,31 +31,30 @@ public class PushManager {
 
     private IoSession session;
 
-    private ExecutorService executorService=Executors.newSingleThreadExecutor();
+    private ExecutorService executorService;
 
 
-    public PushManager() {
-
+    private PushManager() {
+        executorService = Executors.newSingleThreadExecutor();
     }
 
     public static PushManager getInstance() {
-        if (pushManager == null) {
-            pushManager = new PushManager();
+        if (sManager == null) {
+            sManager = new PushManager();
         }
-        return pushManager;
+        return sManager;
     }
 
-    public void setPushEventListener(PushEventListener pushEventListener){
-        if(connector!=null && connector.getHandler()!=null){
-            if(connector.getHandler() instanceof  ClientSessionHandler) {
+    public void setPushEventListener(PushEventListener pushEventListener) {
+        if (connector != null && connector.getHandler() != null) {
+            if (connector.getHandler() instanceof ClientSessionHandler) {
                 ((ClientSessionHandler) connector.getHandler()).setPushEventListener(pushEventListener);
             }
         }
-
     }
 
-    public void openPush(){
-        if(connector!=null){
+    public void openPush() {
+        if (connector != null) {
             return;
         }
         connector = new NioSocketConnector();
@@ -69,15 +68,15 @@ public class PushManager {
     }
 
     /**
-     *  开始连接
+     * 开始连接
+     *
      * @return
      */
     public boolean Connect() {
-        if(!NetworkUtil.isNetworkConnect()|| connector==null){
+        if (!NetworkUtil.isNetworkConnect() || connector == null) {
             return false;
         }
-        if(connector!=null&&connector.isActive()&&connectFuture!=null&&connectFuture.isConnected()&&session!=null&& session.isConnected() )
-        {
+        if (connector != null && connector.isActive() && connectFuture != null && connectFuture.isConnected() && session != null && session.isConnected()) {
             return true;
         }
         FutureTask<Boolean> futureTask = new FutureTask<Boolean>(new Callable<Boolean>() {
@@ -88,7 +87,7 @@ public class PushManager {
                             Config.HOSTNAME, Config.PORT));
                     connectFuture.awaitUninterruptibly();
                     session = connectFuture.getSession();
-                    System.out.println("manager connect"+android.os.Process.myPid()+'-'+android.os.Process.myTid());
+                    System.out.println("manager connect" + android.os.Process.myPid() + '-' + android.os.Process.myTid());
                 } catch (Exception e) {
                     return false;
                 }
@@ -106,19 +105,18 @@ public class PushManager {
     }
 
 
-
-    public boolean sendMessage(ClientPushMessage clientPushMessage){
-        if(session==null|| !session.isConnected()){
-            return  false;
+    public boolean sendMessage(ClientPushMessage clientPushMessage) {
+        if (session == null || !session.isConnected()) {
+            return false;
         }
-        WriteFuture writeFuture=session.write(clientPushMessage);
-        if(writeFuture==null){
+        WriteFuture writeFuture = session.write(clientPushMessage);
+        if (writeFuture == null) {
             return false;
         }
         writeFuture.awaitUninterruptibly();
-        if(writeFuture.isWritten()){
+        if (writeFuture.isWritten()) {
             return true;
-        }else {
+        } else {
             return false;
         }
     }
@@ -126,14 +124,14 @@ public class PushManager {
     /**
      * 关闭连接
      */
-    public void disConnect(){
-        if(session!=null && session.isConnected()){
+    public void disConnect() {
+        if (session != null && session.isConnected()) {
             session.close(false);
         }
-        if(connectFuture!=null && connectFuture.isConnected()) {
+        if (connectFuture != null && connectFuture.isConnected()) {
             connectFuture.cancel();
         }
-        if(connector!=null && !connector.isDisposed()) {
+        if (connector != null && !connector.isDisposed()) {
             connector.dispose();
         }
     }
